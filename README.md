@@ -39,9 +39,16 @@ Softkey-ek: tőtáv +/−, számlálók nullázása, beállítások.
 |---|---|
 | ![Beállítások](render/screen_1001.png) | ![Szerviz](render/screen_1002.png) |
 
-Beállítások: sortáv, sorok száma, tőtáv lépés, indulási előretolás, sebesség-holtsáv, impulzus/csésze,
-csésze/fordulat, áttétel. Szerviz: szabályzó paraméterek (Kp pozíció, PI, max. lemaradás, áramkorlát,
-lágyindítás) és forgatásos kalibráció.
+Beállítások: sortáv, sorok száma, tőtáv lépés, indulási előretolás, sebesség-holtsáv, impulzus/csésze.
+Szerviz: szabályzó paraméterek (Kp pozíció, PI, max. lemaradás, áramkorlát, lágyindítás), innen nyílik a kalibráció.
+
+### Csészesor kalibráció
+
+![Kalibráció](render/screen_1003.png)
+
+Az impulzus/csésze mérése N csészén (10–100): LÉPTET / FINOM gombbal egy csésze a jelhez, NULLA, START, a végén
+az N-edik csésze a jelhez, MENTÉS. A képernyő mutatja az új és az eddigi értéket és az eltérést, így egy
+elszámolt csésze (kb. 1/N eltérés) feltűnik. Részletek: a tervezési jegyzet 5.1 pontja.
 
 ### Riasztások
 

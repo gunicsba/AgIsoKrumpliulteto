@@ -9,6 +9,7 @@ namespace krumpli_pool
 	constexpr std::uint16_t DM_MAIN = 1000;
 	constexpr std::uint16_t DM_SETTINGS = 1001;
 	constexpr std::uint16_t DM_SERVICE = 1002;
+	constexpr std::uint16_t DM_CALIBRATION = 1003;
 	constexpr std::uint16_t AM_JAM = 1100;
 	constexpr std::uint16_t AM_LAG = 1101;
 	constexpr std::uint16_t AM_NO_SPEED = 1102;
@@ -17,6 +18,7 @@ namespace krumpli_pool
 	constexpr std::uint16_t SKM_MAIN = 2000;
 	constexpr std::uint16_t SKM_SETTINGS = 2001;
 	constexpr std::uint16_t SKM_SERVICE = 2002;
+	constexpr std::uint16_t SKM_CALIBRATION = 2003;
 	constexpr std::uint16_t SKM_ALARM = 2100;
 	// Soft keys (object ids)
 	constexpr std::uint16_t KEY_SPACING_UP = 5000;
@@ -27,6 +29,11 @@ namespace krumpli_pool
 	constexpr std::uint16_t KEY_HOME = 5006;
 	constexpr std::uint16_t KEY_CALIBRATE = 5007;
 	constexpr std::uint16_t KEY_ALARM_ACK = 5008;
+	constexpr std::uint16_t KEY_CAL_JOG = 5009;
+	constexpr std::uint16_t KEY_CAL_JOG_FINE = 5010;
+	constexpr std::uint16_t KEY_CAL_ZERO = 5011;
+	constexpr std::uint16_t KEY_CAL_START_STOP = 5012;
+	constexpr std::uint16_t KEY_CAL_SAVE = 5013;
 	// Soft key codes (Soft Key Activation message)
 	constexpr std::uint8_t KEY_SPACING_UP_CODE = 1;
 	constexpr std::uint8_t KEY_SPACING_DOWN_CODE = 2;
@@ -36,10 +43,16 @@ namespace krumpli_pool
 	constexpr std::uint8_t KEY_HOME_CODE = 7;
 	constexpr std::uint8_t KEY_CALIBRATE_CODE = 8;
 	constexpr std::uint8_t KEY_ALARM_ACK_CODE = 9;
-	// Fill attributes for Change Attribute on the status box and the work switch LED
+	constexpr std::uint8_t KEY_CAL_JOG_CODE = 10;
+	constexpr std::uint8_t KEY_CAL_JOG_FINE_CODE = 11;
+	constexpr std::uint8_t KEY_CAL_ZERO_CODE = 12;
+	constexpr std::uint8_t KEY_CAL_START_STOP_CODE = 13;
+	constexpr std::uint8_t KEY_CAL_SAVE_CODE = 14;
+	// Fill attributes for Change Attribute (status box, work switch LED, calibration steps)
 	constexpr std::uint16_t FILL_GREEN = 30001;
 	constexpr std::uint16_t FILL_RED = 30002;
 	constexpr std::uint16_t FILL_GREY = 30003;
+	constexpr std::uint16_t FILL_ORANGE = 30004;
 	// Runtime values
 	constexpr std::uint16_t IN_TARGET_SPACING = 6000;
 	constexpr std::uint16_t OUT_ACTUAL_SPACING = 6001;
@@ -62,5 +75,13 @@ namespace krumpli_pool
 	constexpr std::uint16_t OUT_MOTOR_CURRENT = 6018;
 	constexpr std::uint16_t VAR_MOTOR_PWM = 6019;
 	constexpr std::uint16_t OUT_MOTOR_RPM = 6020;
-	constexpr std::uint16_t OUT_CAL_PULSES = 6207;
+	constexpr std::uint16_t OUT_CAL_PULSES = 6301;
+	constexpr std::uint16_t OUT_CAL_CUPS_DONE = 6302;
+	constexpr std::uint16_t OUT_CAL_NEW = 6303;
+	constexpr std::uint16_t OUT_CAL_OLD = 6304;
+	constexpr std::uint16_t OUT_CAL_DEVIATION = 6305;
+	constexpr std::uint16_t OUT_CAL_MESSAGE = 6306;
+	constexpr std::uint16_t OBJ_CAL_STEP1 = 6307;
+	constexpr std::uint16_t OBJ_CAL_STEP2 = 6308;
+	constexpr std::uint16_t OBJ_CAL_STEP3 = 6309;
 } // namespace krumpli_pool

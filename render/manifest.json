@@ -1,12 +1,12 @@
 {
   "manifest_version": 1,
-  "pool_id": "76c16092",
+  "pool_id": "e3ed8d20",
   "pool_name": "",
   "manufacturer": "",
   "public": false,
   "known_issues": [],
-  "pool_sha256": "76c160920181a8289501702889c32d74b9ca66eb73583b01ab18793d3bdd3858",
-  "pool_size": 5933,
+  "pool_sha256": "e3ed8d20da4e17752a433f7b0e6bbff7efbeaaf5b9ba9ae76426c3eaba41d1ba",
+  "pool_size": 7374,
   "vt_commit": "1.6.0-59-g25bbb5a",
   "render_settings": {
     "platform": "windows",
@@ -77,7 +77,7 @@
       "object_type": "DataMask",
       "width": 480,
       "height": 480,
-      "sha256": "d625b8d797df94508475a7bf1ad9b72a41d49cf01e41497b11f375487a943569"
+      "sha256": "977060f457e21da0af5ef95b111f1624950ce7de4373c48ca87427279fa8a535"
     },
     {
       "file": "dm_1002.png",
@@ -85,7 +85,15 @@
       "object_type": "DataMask",
       "width": 480,
       "height": 480,
-      "sha256": "667ccc993e1f98d7746ab5f2faef681cf36a7267ec816116eb1dbf85401b2423"
+      "sha256": "81ba7430602296d7435f70f429e20d497ff51969b1b5a29b088ad55675a0884c"
+    },
+    {
+      "file": "dm_1003.png",
+      "object_id": 1003,
+      "object_type": "DataMask",
+      "width": 480,
+      "height": 480,
+      "sha256": "9a2fdfbdd0813b33777acfc0271dacc9682a137848f4cbf0fe7c14b8ffacfedd"
     },
     {
       "file": "screen_1000.png",
@@ -102,7 +110,7 @@
       "object_type": "DataMask",
       "width": 630,
       "height": 480,
-      "sha256": "e5bd6d3420a6126c1fa275d1cb9cfc4a4d9c645a86bace7b661b1efcb2973a6c",
+      "sha256": "9e45b5b4124dc367801791cb3630c50f0901449e6436e0519d10fada91f48bcc",
       "soft_key_mask_id": 2001
     },
     {
@@ -111,8 +119,17 @@
       "object_type": "DataMask",
       "width": 630,
       "height": 480,
-      "sha256": "8c7bbca1d09f9ce1dcc89bf3a1f278392abf89463f89e806de086293a753b50a",
+      "sha256": "e67fccfd5a0780a4ef326047bdc4f7168bf9d800af0c671e43479b7270c1785b",
       "soft_key_mask_id": 2002
+    },
+    {
+      "file": "screen_1003.png",
+      "object_id": 1003,
+      "object_type": "DataMask",
+      "width": 630,
+      "height": 480,
+      "sha256": "36ef1469b994628872397c0fae4febff6bf34c26fa08f0c46408ffa592e2aff2",
+      "soft_key_mask_id": 2003
     },
     {
       "file": "screen_1100.png",
@@ -177,6 +194,16 @@
       "width": 150,
       "height": 480,
       "sha256": "7c32573cafdcad454a93a49bea497e3c4465319f84be94df77a82956cda5f0b8",
+      "page": 1,
+      "page_count": 1
+    },
+    {
+      "file": "skm_2003.png",
+      "object_id": 2003,
+      "object_type": "SoftKeyMask",
+      "width": 150,
+      "height": 480,
+      "sha256": "ae879caf625f1e7572bbbdeb38a00e27c6761c5d53c9fcc32294674a22abf070",
       "page": 1,
       "page_count": 1
     },

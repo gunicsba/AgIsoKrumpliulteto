@@ -26,19 +26,19 @@ Sebességkövetés helyett a megtett távolsághoz kötjük a motor pozíciójá
 ### 2.1 Képletek
 
 ```
-csésze_per_ford      : csészék száma a jeladó tengelyének egy fordulatára (áttétellel együtt)
+impulzus_per_csésze  : jeladó-impulzus egy csészére, kalibrációval mérve (5.1 pont)
 tőtáv [m]            : felhasználói beállítás
 v [m/s]              : kiválasztott sebességforrás
 d [m]                : megtett távolság (munkakapcsolóval kapuzva)
 
-cél_pozíció [ford]   = d / (tőtáv * csésze_per_ford)
-előcsatolás [ford/s] = v / (tőtáv * csésze_per_ford)
+cél_pozíció [imp]    = d / tőtáv * impulzus_per_csésze
+előcsatolás [imp/s]  = v / tőtáv * impulzus_per_csésze
 ```
 
 ### 2.2 Szabályzó struktúra
 
 ```
-ff       = v / (tőtáv * csésze_per_ford)
+ff       = v / tőtáv * impulzus_per_csésze
 pos_err  = cél_pozíció - tényleges_pozíció
 pos_err  = clamp(pos_err, -max_lemaradás, +max_lemaradás)
 n_cél    = ff + Kp_pos * pos_err
@@ -46,6 +46,8 @@ n_cél    = ff + Kp_pos * pos_err
 belső hurok: PI(n_cél - n_tényleges) -> PWM
 ```
 
+- Minden pozíció és fordulat jeladó-impulzusban értendő; a `max_lemaradás` csészében van megadva, impulzusra
+  `* impulzus_per_csésze` szorzással váltjuk.
 - Az **előcsatolás** végzi a munka nagy részét, a pozícióhurok csak korrigál.
 - A **clamp** megakadályozza, hogy elakadás/leállás után a motor egyszerre próbálja behozni a lemaradást (gumók egymásra kerülnének).
 - Ha `|pos_err|` tartósan eléri a `max_lemaradás` értéket → **riasztás**, a többletet el kell dobni (a cél pozíciót a tényleges közelébe húzni).
@@ -105,15 +107,38 @@ dolgozik = munkakapcsoló_lent && v > v_min && sebességforrás_érvényes && !r
 ## 5. Forgásjeladó
 
 - Lehetőleg a **motortengelyen** (hajtómű előtt) → nagy felbontás a pozícióhurokhoz.
-- Kalibráció:
-  - `impulzus_per_csésze` – forgatásos kalibrálás: „forgass N csészét, számold az impulzusokat”, vagy
-  - áttétel + csészék száma fordulatonként megadva.
+- Kalibráció: `impulzus_per_csésze` mérése, lásd 5.1. Áttételt és csésze/fordulat értéket nem kérünk be, a mért
+  érték ezeket kiváltja (és a láncos csészesor pontatlanságát is benne méri). Kézzel is beírható.
 - **Elakadás / láncszakadás figyelés:**
   - nagy PWM, de nincs impulzus → elakadás
   - impulzus van, de a terhelés (áram) gyanúsan kicsi → lánc/hajtás szakadás (ha van áramméréses adat)
 - **Nehezedő hajtás:** ha azonos fordulatszámhoz egyre nagyobb PWM és áram kell → kopás, szennyeződés, beszorulás
   előjele. A VT-n a fordulat, a PWM és az áram egymás mellett látszik; később figyelmeztetés is lehet belőle
   (pl. tanult PWM/áram–fordulat görbéhez képest).
+
+### 5.1 Csészesor kalibráció (impulzus / csésze)
+
+A VT-n léptetve forgatjuk a csészesort, N csészét számolunk. A pontosságot csak az dönti el, mennyire pontosan
+áll a csésze a jelnél az elején és a végén; ez a hiba N-nel osztva jelenik meg csészénként.
+
+1. **N megadása** (10–100, alapérték 20). Ha kiderül, hány csésze van a csészesoron, és belefér a tartományba,
+   N legyen a teljes kör: így a csészék közti távolság egyenetlensége és a lánc nyúlása teljesen kiesik.
+2. **Ráállás:** LÉPTET (nyomva tartva lassan forog, elengedésre azonnal áll) és FINOM (lenyomásonként egy kis
+   lépés), amíg egy csésze a jelhez (pl. kiejtési pont vagy festett jel) nem ér. **NULLA** → impulzusszámláló = 0.
+3. **Forgatás:** START → lassan forog. Ha van korábbi érték, abból becsüli a megtett csészéket, és kb.
+   N − ½ csészénél magától megáll; ha nincs, a user állítja meg (STOP).
+4. **Befejezés:** FINOM léptetéssel az N-edik csésze a jelhez, majd **MENTÉS**: `impulzus_per_csésze = impulzus / N`
+   (0,01 felbontással tárolva).
+
+Szabályok:
+
+- A jelhez **mindig előre haladva** állunk rá (lánc / fogaskerék holtjáték). Túlfutásnál vissza a jel elé, és újra előre.
+- **Elszámolt csésze szűrése:** ha az új érték a régitől kb. `1/N`-nel tér el (N = 20 → kb. 5 %), az nagy
+  valószínűséggel egy csésze elszámolás, nem valós változás → rákérdezés mentés előtt. A VT mutatja a régi és az új
+  értéket, és az eltérést %-ban.
+- Csak álló gépnél (v = 0) és felemelt munkakapcsolónál engedélyezett; bármelyik feltétel megszűnése → motor áll,
+  a kalibráció megszakad.
+- A léptetés lassú, áramkorláttal; elakadásfigyelés itt is él.
 
 ---
 
@@ -129,7 +154,9 @@ dolgozik = munkakapcsoló_lent && v > v_min && sebességforrás_érvényes && !r
 
 ### Beállítások / kalibráció
 - Sortáv, sorok száma (területszámításhoz)
-- `impulzus_per_csésze` vagy áttétel + csészeszám
+- `impulzus_per_csésze` (0,01 felbontás, kalibrációval mérve vagy beírva)
+- Kalibráció képernyő: lépésjelző, N, számolt impulzus, becsült megtett csésze, új és régi érték, eltérés %;
+  softkey-ek: LÉPTET, FINOM, NULLA, START/STOP, MENTÉS
 - Szabályzó paraméterek (`Kp_pos`, PI erősítések, `max_lemaradás`) – szerviz szint
 - Indulási előretolás
 - Sebesség-holtsáv
@@ -168,7 +195,8 @@ AUX-N funkciók (opcionális): tőtáv +/-.
 ## 9. Nyitott kérdések
 
 - [ ] Motor típusa, feszültség, meghajtó (áramméréssel?)
-- [ ] Jeladó helye és felbontása, áttétel
-- [ ] Csészék száma / fordulat
+- [ ] Jeladó helye és felbontása
+- [ ] Csészék száma a csészesoron (N alapértékéhez: egy teljes kör, ha 10–100 közé esik)
+- [ ] Hol legyen a kalibrációs jel (kiejtési pont vagy festett jel)?
 - [ ] Sortáv, sorszám
 - [ ] Szükség van-e kézi sebességforrásra (pl. saját radar / GNSS) nem ISOBUS traktorhoz?

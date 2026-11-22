@@ -209,9 +209,9 @@ class Pool:
 
 # --- Object ids -----------------------------------------------------------------------------
 # Masks
-DM_MAIN, DM_SETTINGS, DM_SERVICE = 1000, 1001, 1002
+DM_MAIN, DM_SETTINGS, DM_SERVICE, DM_CALIBRATION = 1000, 1001, 1002, 1003
 AM_JAM, AM_LAG, AM_NO_SPEED, AM_MOTOR = 1100, 1101, 1102, 1103
-SKM_MAIN, SKM_SETTINGS, SKM_SERVICE, SKM_ALARM = 2000, 2001, 2002, 2100
+SKM_MAIN, SKM_SETTINGS, SKM_SERVICE, SKM_CALIBRATION, SKM_ALARM = 2000, 2001, 2002, 2003, 2100
 
 # Keys and their key codes (the code the ECU gets in the Soft Key Activation message)
 KEYS = {
@@ -223,6 +223,12 @@ KEYS = {
     "KEY_HOME": (5006, 7),
     "KEY_CALIBRATE": (5007, 8),
     "KEY_ALARM_ACK": (5008, 9),
+    # Calibration screen. JOG runs the motor slowly while held (pressed/held/released), JOG_FINE moves one small step
+    "KEY_CAL_JOG": (5009, 10),
+    "KEY_CAL_JOG_FINE": (5010, 11),
+    "KEY_CAL_ZERO": (5011, 12),
+    "KEY_CAL_START_STOP": (5012, 13),
+    "KEY_CAL_SAVE": (5013, 14),
 }
 
 # Values the ECU changes at runtime (Change Numeric Value / Change String Value / Change Attribute)
@@ -254,9 +260,7 @@ IN_ROW_COUNT = 6101
 IN_SPACING_STEP = 6102            # mm, shown as cm
 IN_START_ADVANCE = 6103           # mm, shown as cm
 IN_SPEED_DEADBAND = 6104          # 0.1 km/h
-IN_PULSES_PER_CUP = 6105
-IN_CUPS_PER_REV = 6106
-IN_GEAR_RATIO = 6107              # 0.01
+IN_PULSES_PER_CUP = 6105         # 0.01 pulse, measured by the calibration (or typed in)
 
 # Service
 IN_KP_POS = 6200                  # 0.01
@@ -265,12 +269,23 @@ IN_PI_KI = 6202                   # 0.01
 IN_MAX_LAG = 6203                 # 0.1 cup
 IN_CURRENT_LIMIT = 6204           # 0.1 A
 IN_SOFT_START = 6205              # ms
-IN_CAL_CUPS = 6206                # cups to turn for calibration
-OUT_CAL_PULSES = 6207             # pulses counted
+
+# Calibration (DM_CALIBRATION)
+IN_CAL_CUPS = 6300                # N, cups to turn, 10..100
+OUT_CAL_PULSES = 6301             # pulses counted since ZERO
+OUT_CAL_CUPS_DONE = 6302          # 0.1 cup, estimate from the old pulses per cup (0 if there is none)
+OUT_CAL_NEW = 6303                # 0.01 pulse per cup, pulses / N
+OUT_CAL_OLD = 6304                # 0.01 pulse per cup, the value in use
+OUT_CAL_DEVIATION = 6305          # 0.01 %, offset so that 0 % = 100000
+OUT_CAL_MESSAGE = 6306            # string, 40 chars: what to do next
+OBJ_CAL_STEP1 = 6307              # step circles: change the fill to FILL_GREEN (done),
+OBJ_CAL_STEP2 = 6308              #   FILL_ORANGE (current) or FILL_GREY (not yet)
+OBJ_CAL_STEP3 = 6309
 
 FILL_GREEN = "FILL_GREEN"
 FILL_RED = "FILL_RED"
 FILL_GREY = "FILL_GREY"
+FILL_ORANGE = "FILL_ORANGE"
 
 
 def key_label(pool, key_name, big, small, big_size=F24x32, colour=BLACK):
@@ -311,6 +326,17 @@ def setting_row(pool, label, unit, input_id, value, minimum, maximum, scale, dec
             (pool.text(80, 32, unit, LABEL, F12x16), 384, y)]
 
 
+def output_row(pool, label, unit, name, value, scale, decimals, y, offset=0, colour=BLACK):
+    """A read-only row; `name` is the id constant's name, so it also goes into the header."""
+    return [(pool.text(240, 32, label, BLACK, F12x16), 16, y),
+            (pool.number(globals()[name], 120, 32, value, scale, decimals, colour, F16x24, offset=offset, name=name), 256, y),
+            (pool.text(80, 32, unit, LABEL, F12x16), 384, y)]
+
+
+def section_title(pool, title, y):
+    return [(pool.text(448, 20, title, DARK_GREEN, F12x16), 16, y), (pool.hline(448, DARK_GREEN, 2), 16, y + 22)]
+
+
 def build():
     p = Pool()
 
@@ -320,6 +346,7 @@ def build():
     p.names[FILL_GREEN] = p.fill(rgb(0, 4, 0))
     p.names[FILL_RED] = p.fill(RED)
     p.names[FILL_GREY] = p.fill(GREY)
+    p.names[FILL_ORANGE] = p.fill(rgb(5, 3, 0))
 
     # --- Soft keys --------------------------------------------------------------------------
     key_label(p, "KEY_SPACING_UP", "+", "TŐTÁV")
@@ -330,12 +357,23 @@ def build():
     key_label(p, "KEY_HOME", "<", "VISSZA")
     key_label(p, "KEY_CALIBRATE", "C", "KALIBR.")
     key_label(p, "KEY_ALARM_ACK", "OK", "NYUGTA", F24x32, DARK_GREEN)
+    key_label(p, "KEY_CAL_JOG", ">>", "LÉPTET")
+    key_label(p, "KEY_CAL_JOG_FINE", ">|", "FINOM")
+    key_label(p, "KEY_CAL_ZERO", "0", "NULLA")
+    play = p.polygon(20, 24, [(0, 0), (20, 12), (0, 24)], DARK_GREEN, DARK_GREEN)
+    stop = p.rect(20, 20, RED, RED)
+    p.key(KEYS["KEY_CAL_START_STOP"][0], KEYS["KEY_CAL_START_STOP"][1],
+          [(play, 8, 8), (stop, 34, 10), (p.text(60, 18, "START/STOP", BLACK, F6x8, CENTER | MIDDLE), 0, 40)],
+          name="KEY_CAL_START_STOP")
+    key_label(p, "KEY_CAL_SAVE", "OK", "MENTÉS", F24x32, DARK_GREEN)
 
     k = {name: object_id for name, (object_id, _) in KEYS.items()}
     p.soft_key_mask(SKM_MAIN, [k["KEY_SPACING_UP"], k["KEY_SPACING_DOWN"], k["KEY_RESET_COUNTERS"],
                                NONE, NONE, k["KEY_SETTINGS"]], name="SKM_MAIN")
     p.soft_key_mask(SKM_SETTINGS, [k["KEY_HOME"], NONE, NONE, NONE, NONE, k["KEY_SERVICE"]], name="SKM_SETTINGS")
     p.soft_key_mask(SKM_SERVICE, [k["KEY_HOME"], NONE, k["KEY_CALIBRATE"]], name="SKM_SERVICE")
+    p.soft_key_mask(SKM_CALIBRATION, [k["KEY_HOME"], k["KEY_CAL_JOG"], k["KEY_CAL_JOG_FINE"], k["KEY_CAL_ZERO"],
+                                      k["KEY_CAL_START_STOP"], k["KEY_CAL_SAVE"]], name="SKM_CALIBRATION")
     p.soft_key_mask(SKM_ALARM, [k["KEY_ALARM_ACK"]], name="SKM_ALARM")
 
     # --- Main working screen ---------------------------------------------------------------
@@ -431,23 +469,17 @@ def build():
         ("Indulási előretolás", "cm", IN_START_ADVANCE, 0, 0, 500, 0.1, 1),
         ("Sebesség-holtsáv", "km/h", IN_SPEED_DEADBAND, 3, 0, 50, 0.1, 1),
     ]
-    calibration = [
-        ("Impulzus / csésze", "imp", IN_PULSES_PER_CUP, 128, 1, 65000, 1, 0),
-        ("Csésze / fordulat", "db", IN_CUPS_PER_REV, 18, 1, 200, 1, 0),
-        ("Áttétel", ": 1", IN_GEAR_RATIO, 2500, 100, 20000, 0.01, 2),
-    ]
-    settings = header(p, "BEÁLLÍTÁSOK")
-    settings += [(p.text(448, 20, "Gép", DARK_GREEN, F12x16), 16, 52), (p.hline(448, DARK_GREEN, 2), 16, 74)]
+    settings = header(p, "BEÁLLÍTÁSOK") + section_title(p, "Gép", 52)
     for index, row in enumerate(rows):
         settings += setting_row(p, *row, y=82 + index * 38)
-    settings += [(p.text(448, 20, "Hajtás / jeladó", DARK_GREEN, F12x16), 16, 278), (p.hline(448, DARK_GREEN, 2), 16, 300)]
-    for index, row in enumerate(calibration):
-        settings += setting_row(p, *row, y=308 + index * 38)
+    settings += section_title(p, "Hajtás / jeladó", 278)
+    settings += setting_row(p, "Impulzus / csésze", "imp", IN_PULSES_PER_CUP, 12800, 100, 10000000, 0.01, 2, y=308)
+    settings.append((p.text(448, 32, "Kalibrációval mérhető: SZERVIZ, majd KALIBR. Kézzel is beírható.", LABEL, F6x8,
+                            LEFT | TOP, wrap=True), 16, 346))
     p.data_mask(DM_SETTINGS, SKM_SETTINGS, settings, bg=PANEL, name="DM_SETTINGS")
 
-    # --- Service: controller and calibration --------------------------------------------------
-    service = header(p, "SZERVIZ")
-    service += [(p.text(448, 20, "Szabályzó", DARK_GREEN, F12x16), 16, 52), (p.hline(448, DARK_GREEN, 2), 16, 74)]
+    # --- Service: controller -------------------------------------------------------------------
+    service = header(p, "SZERVIZ") + section_title(p, "Szabályzó", 52)
     controller = [
         ("Kp pozíció", "1/s", IN_KP_POS, 150, 0, 5000, 0.01, 2),
         ("PI Kp", "", IN_PI_KP, 80, 0, 5000, 0.01, 2),
@@ -458,15 +490,46 @@ def build():
     ]
     for index, row in enumerate(controller):
         service += setting_row(p, *row, y=82 + index * 38)
-    service += [
-        (p.text(448, 20, "Forgatásos kalibráció", DARK_GREEN, F12x16), 16, 316), (p.hline(448, DARK_GREEN, 2), 16, 338),
-        *setting_row(p, "Forgatandó csésze", "db", IN_CAL_CUPS, 50, 1, 500, 1, 0, y=346),
-        (p.text(240, 32, "Számolt impulzus", BLACK, F12x16), 16, 384),
-        (p.number(OUT_CAL_PULSES, 120, 32, 6400, 1, 0, BLACK, F16x24, name="OUT_CAL_PULSES"), 256, 384),
-        (p.text(80, 32, "imp", LABEL, F12x16), 384, 384),
-        (p.text(448, 36, "Álló gépnél, felemelt munkakapcsolóval. Indítás: KALIBR. gomb.", LABEL, F6x8, LEFT | TOP, wrap=True), 16, 426),
-    ]
+    service += section_title(p, "Csészesor kalibráció", 316)
+    service.append((p.text(448, 60, "Az impulzus / csésze mérése N csésze körbeforgatásával. Megnyitás: KALIBR. gomb.",
+                           BLACK, F8x12, LEFT | TOP, wrap=True), 16, 346))
     p.data_mask(DM_SERVICE, SKM_SERVICE, service, bg=PANEL, name="DM_SERVICE")
+
+    # --- Calibration: pulses per cup over N cups -------------------------------------------------
+    # 1. JOG / JOG FINE until a cup is at the mark, ZERO.  2. START: turns slowly, stops by itself near N - 1/2 cup
+    # (with an old value) or on STOP.  3. JOG FINE until cup N is at the mark, SAVE: pulses / N.
+    # Always approach the mark forwards (backlash); after an overshoot go back past it and come forwards again.
+    steps = [
+        (OBJ_CAL_STEP1, "OBJ_CAL_STEP1", FILL_ORANGE, "Ráállás", "LÉPTET / FINOM: egy csésze a jelhez, majd NULLA"),
+        (OBJ_CAL_STEP2, "OBJ_CAL_STEP2", FILL_GREY, "Forgatás", "START: lassan forog N csészényit, STOP megállítja"),
+        (OBJ_CAL_STEP3, "OBJ_CAL_STEP3", FILL_GREY, "Befejezés", "FINOM: az N-edik csésze a jelhez, majd MENTÉS"),
+    ]
+    calibration = header(p, "KALIBRÁCIÓ")
+    for index, (object_id, name, fill, title, hint) in enumerate(steps):
+        y = 52 + index * 44
+        line = p.line(BLACK, 2)
+        circle = p.add(object_id, u8(15) + u16(line) + u16(30) + u16(30) + u8(0) + u8(0) + u8(0) + u16(p.names[fill]) + u8(0),
+                       refs=[line, p.names[fill]], name=name)
+        calibration += [
+            (circle, 16, y + 4),
+            (p.text(30, 30, str(index + 1), WHITE, F12x16, CENTER | MIDDLE), 16, y + 4),
+            (p.text(400, 18, title, BLACK, F12x16), 58, y + 2),
+            (p.text(400, 14, hint, LABEL, F6x8), 58, y + 22),
+        ]
+    calibration += [
+        (p.rect(448, 32, rgb(5, 5, 3), rgb(5, 3, 0), 2), 16, 186),
+        (p.text(440, 32, "Állíts egy csészét a jelhez, majd NULLA!", BLACK, F8x12, CENTER | MIDDLE,
+                object_id=OUT_CAL_MESSAGE, name="OUT_CAL_MESSAGE"), 20, 186),
+        *setting_row(p, "Csészék száma (N)", "db", IN_CAL_CUPS, 20, 10, 100, 1, 0, y=226),
+        *output_row(p, "Számolt impulzus", "imp", "OUT_CAL_PULSES", 2567, 1, 0, y=262),
+        *output_row(p, "Megtett csésze (becsült)", "db", "OUT_CAL_CUPS_DONE", 201, 0.1, 1, y=298),
+        *output_row(p, "Új impulzus / csésze", "imp", "OUT_CAL_NEW", 12835, 0.01, 2, y=334, colour=DARK_GREEN),
+        *output_row(p, "Eddigi impulzus / csésze", "imp", "OUT_CAL_OLD", 12800, 0.01, 2, y=370),
+        *output_row(p, "Eltérés", "%", "OUT_CAL_DEVIATION", 100027, 0.01, 2, y=406, offset=-100000),
+        (p.text(448, 20, "Csak álló gépnél, felemelt munkakapcsolóval. A jelhez mindig előre haladva állj rá.",
+                LABEL, F6x8, LEFT | MIDDLE), 16, 446),
+    ]
+    p.data_mask(DM_CALIBRATION, SKM_CALIBRATION, calibration, bg=PANEL, name="DM_CALIBRATION")
 
     # --- Alarms ------------------------------------------------------------------------------
     triangle = p.polygon(120, 104, [(60, 0), (120, 104), (0, 104)], YELLOW, BLACK, 3)
@@ -513,12 +576,14 @@ def write_header(p, path):
         "",
         "namespace krumpli_pool",
         "{",
-        *section("Masks", ["DM_MAIN", "DM_SETTINGS", "DM_SERVICE", "AM_JAM", "AM_LAG", "AM_NO_SPEED", "AM_MOTOR"]),
-        *section("Soft key masks", ["SKM_MAIN", "SKM_SETTINGS", "SKM_SERVICE", "SKM_ALARM"]),
+        *section("Masks", ["DM_MAIN", "DM_SETTINGS", "DM_SERVICE", "DM_CALIBRATION", "AM_JAM", "AM_LAG", "AM_NO_SPEED",
+                           "AM_MOTOR"]),
+        *section("Soft key masks", ["SKM_MAIN", "SKM_SETTINGS", "SKM_SERVICE", "SKM_CALIBRATION", "SKM_ALARM"]),
         *section("Soft keys (object ids)", list(KEYS)),
         "\t// Soft key codes (Soft Key Activation message)",
         *[f"\tconstexpr std::uint8_t {n}_CODE = {code};" for n, (_, code) in KEYS.items()],
-        *section("Fill attributes for Change Attribute on the status box and the work switch LED", [FILL_GREEN, FILL_RED, FILL_GREY]),
+        *section("Fill attributes for Change Attribute (status box, work switch LED, calibration steps)",
+                 [FILL_GREEN, FILL_RED, FILL_GREY, FILL_ORANGE]),
         *section("Runtime values", var_names),
         "} // namespace krumpli_pool",
         "",
