@@ -343,11 +343,11 @@ def build():
     status = p.text(130, 30, "DOLGOZIK", WHITE, F12x16, CENTER | MIDDLE, object_id=OUT_STATUS_TEXT, name="OUT_STATUS_TEXT")
 
     spacing = panel(p, 464, 132, "Tőtáv") + [
-        (p.text(140, 16, "cél", LABEL, F8x12), 12, 24),
-        (p.input_number(IN_TARGET_SPACING, 150, 56, 300, 100, 800, 0.1, 1, F32x48, name="IN_TARGET_SPACING"), 8, 42),
+        (p.text(140, 16, "tényleges", LABEL, F8x12), 12, 24),
+        (p.number(OUT_ACTUAL_SPACING, 150, 56, 304, 0.1, 1, BLACK, F32x48, name="OUT_ACTUAL_SPACING"), 8, 42),
         (p.text(40, 56, "cm", BLACK, F16x24, LEFT | BOTTOM), 164, 40),
-        (p.text(120, 16, "tényleges", LABEL, F8x12), 236, 28),
-        (p.number(OUT_ACTUAL_SPACING, 110, 32, 304, 0.1, 1, BLACK, F16x24, name="OUT_ACTUAL_SPACING"), 236, 44),
+        (p.text(120, 16, "cél", LABEL, F8x12), 236, 28),
+        (p.input_number(IN_TARGET_SPACING, 110, 32, 300, 100, 800, 0.1, 1, F16x24, name="IN_TARGET_SPACING"), 236, 44),
         (p.text(48, 32, "cm", LABEL, F12x16, LEFT | BOTTOM), 350, 44),
         (p.text(120, 16, "tő / ha", LABEL, F8x12), 236, 82),
         (p.number(OUT_SEEDS_PER_HA, 110, 32, 44444, 1, 0, BLACK, F16x24, name="OUT_SEEDS_PER_HA"), 236, 98),

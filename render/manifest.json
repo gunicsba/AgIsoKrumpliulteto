@@ -1,11 +1,11 @@
 {
   "manifest_version": 1,
-  "pool_id": "3751c8c3",
+  "pool_id": "76c16092",
   "pool_name": "",
   "manufacturer": "",
   "public": false,
   "known_issues": [],
-  "pool_sha256": "3751c8c350677d690c0f1ae5a141bfec8101b62878fa0900b9ce288cc48a4040",
+  "pool_sha256": "76c160920181a8289501702889c32d74b9ca66eb73583b01ab18793d3bdd3858",
   "pool_size": 5933,
   "vt_commit": "1.6.0-59-g25bbb5a",
   "render_settings": {
@@ -69,7 +69,7 @@
       "object_type": "DataMask",
       "width": 480,
       "height": 480,
-      "sha256": "3638b28c7f852713c8d40cf45a40a5888af92b0d124d0afe9f7b25b04c5350b2"
+      "sha256": "979149340d1ca0d8e01773a14d595ee48bc7a5682808c332ae9ff40a514b5608"
     },
     {
       "file": "dm_1001.png",
@@ -93,7 +93,7 @@
       "object_type": "DataMask",
       "width": 630,
       "height": 480,
-      "sha256": "48f4e3cf74127916f8565dfd5a2aa4581d48e8f1e447cd7481e45125bf9bdb43",
+      "sha256": "ed3f7d18ce68f6c2e0f86efd2250006e1727074b1ae33d3e359ba9e4710fe8af",
       "soft_key_mask_id": 2000
     },
     {
