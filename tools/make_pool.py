@@ -246,6 +246,7 @@ OUT_SEEDS_TOTAL = 6016            # pieces
 OUT_MOTOR_STATE = 6017            # string, 8 chars
 OUT_MOTOR_CURRENT = 6018          # 0.1 A
 VAR_MOTOR_PWM = 6019              # number variable, 0.01 % (0..10000): PWM bar and number together
+OUT_MOTOR_RPM = 6020              # 1/min
 
 # Settings
 IN_ROW_SPACING = 6100             # cm
@@ -368,22 +369,28 @@ def build():
         (p.text(212, 16, "gép leengedve", LABEL, F6x8), 62, 72),
     ]
 
-    motor = panel(p, 464, 76, "Motor") + [
+    def metric(label, y):
+        return (p.text(80, 20, label, LABEL, F8x12), 8, y)
+
+    motor = panel(p, 464, 92, "Motor") + [
         (p.text(90, 20, "OK", DARK_GREEN, F12x16, LEFT | MIDDLE, object_id=OUT_MOTOR_STATE, name="OUT_MOTOR_STATE"), 60, 2),
-        (p.text(80, 20, "PWM", LABEL, F8x12), 8, 26),
-        (p.bar(OUT_MOTOR_PWM_BAR, 110, 18, 0, rgb(0, 3, 5), ticks=5, maximum=10000, var=VAR_MOTOR_PWM,
-               name="OUT_MOTOR_PWM_BAR"), 8, 46),
-        (p.number(OUT_MOTOR_PWM, 56, 18, 0, 0.01, 2, BLACK, F8x12, var=VAR_MOTOR_PWM, name="OUT_MOTOR_PWM"), 120, 46),
-        (p.text(16, 18, "%", LABEL, F8x12), 178, 46),
-        (p.rect(1, 50, GREY), 198, 22),
-        (p.text(60, 20, "áram", LABEL, F8x12), 208, 26),
-        (p.number(OUT_MOTOR_CURRENT, 52, 24, 124, 0.1, 1, BLACK, F12x16, name="OUT_MOTOR_CURRENT"), 204, 42),
-        (p.text(16, 24, "A", LABEL, F12x16, LEFT | BOTTOM), 258, 42),
-        (p.rect(1, 50, GREY), 280, 22),
-        (p.text(140, 20, "pozícióhiba", LABEL, F8x12), 290, 26),
-        (p.bar(OUT_POSITION_ERROR_BAR, 90, 18, 54, rgb(5, 3, 0), target=50, name="OUT_POSITION_ERROR_BAR"), 290, 46),
-        (p.number(OUT_POSITION_ERROR, 44, 18, 10008, 0.01, 2, BLACK, F8x12, offset=-10000, name="OUT_POSITION_ERROR"), 382, 46),
-        (p.text(30, 18, "cs.", LABEL, F8x12), 430, 46),
+        # Speed, PWM and current side by side: more PWM and current for the same speed = the drive got harder
+        metric("fordulat", 24),
+        (p.number(OUT_MOTOR_RPM, 64, 20, 1450, 1, 0, BLACK, F8x12, name="OUT_MOTOR_RPM"), 186, 24),
+        (p.text(40, 20, "1/min", LABEL, F8x12), 256, 24),
+        metric("PWM", 46),
+        (p.bar(OUT_MOTOR_PWM_BAR, 100, 16, 0, rgb(0, 3, 5), ticks=5, maximum=10000, var=VAR_MOTOR_PWM,
+               name="OUT_MOTOR_PWM_BAR"), 80, 48),
+        (p.number(OUT_MOTOR_PWM, 64, 20, 0, 0.01, 2, BLACK, F8x12, var=VAR_MOTOR_PWM, name="OUT_MOTOR_PWM"), 186, 46),
+        (p.text(40, 20, "%", LABEL, F8x12), 256, 46),
+        metric("áram", 68),
+        (p.number(OUT_MOTOR_CURRENT, 64, 20, 124, 0.1, 1, BLACK, F8x12, name="OUT_MOTOR_CURRENT"), 186, 68),
+        (p.text(40, 20, "A", LABEL, F8x12), 256, 68),
+        (p.rect(1, 66, GREY), 296, 22),
+        (p.text(160, 20, "pozícióhiba", LABEL, F8x12), 306, 24),
+        (p.bar(OUT_POSITION_ERROR_BAR, 150, 18, 54, rgb(5, 3, 0), target=50, name="OUT_POSITION_ERROR_BAR"), 306, 46),
+        (p.number(OUT_POSITION_ERROR, 50, 20, 10008, 0.01, 2, BLACK, F8x12, offset=-10000, name="OUT_POSITION_ERROR"), 330, 68),
+        (p.text(60, 20, "csésze", LABEL, F8x12), 390, 68),
     ]
 
     def counter(label, unit, number_id, name, value, scale, decimals, y):
@@ -391,7 +398,7 @@ def build():
                 (p.number(number_id, 120, 18, value, scale, decimals, BLACK, F12x16, name=name), 100, y),
                 (p.text(40, 18, unit, LABEL, F8x12), 226, y)]
 
-    counters = panel(p, 464, 80, "Számlálók") + [
+    counters = panel(p, 464, 76, "Számlálók") + [
         (p.text(100, 16, "napi", LABEL, F8x12, RIGHT | MIDDLE), 128, 4),
         (p.text(100, 16, "összes", LABEL, F8x12, RIGHT | MIDDLE), 324, 4),
         (p.text(80, 18, "Terület", BLACK, F8x12), 8, 26),
@@ -412,8 +419,8 @@ def build():
         *offset(speed, 8, 188),
         *offset(work, 244, 188),
         *offset(motor, 8, 286),
-        *offset(counters, 8, 368),
-        (p.text(464, 24, "TESZT VERZIÓ", GREY, F6x8, RIGHT | BOTTOM), 8, 452),
+        *offset(counters, 8, 384),
+        (p.text(464, 18, "TESZT VERZIÓ", GREY, F6x8, RIGHT | BOTTOM), 8, 460),
     ], name="DM_MAIN")
 
     # --- Settings ------------------------------------------------------------------------------

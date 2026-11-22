@@ -61,5 +61,6 @@ namespace krumpli_pool
 	constexpr std::uint16_t OUT_MOTOR_STATE = 6017;
 	constexpr std::uint16_t OUT_MOTOR_CURRENT = 6018;
 	constexpr std::uint16_t VAR_MOTOR_PWM = 6019;
+	constexpr std::uint16_t OUT_MOTOR_RPM = 6020;
 	constexpr std::uint16_t OUT_CAL_PULSES = 6207;
 } // namespace krumpli_pool

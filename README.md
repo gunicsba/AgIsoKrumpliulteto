@@ -29,7 +29,8 @@ kódolással (font type 2), így az ő és ű is helyesen jelenik meg. A kijelze
 ![Munkaképernyő](render/screen_1000.png)
 
 Cél tőtáv (bevihető), tényleges tőtáv, tő/ha, sebesség és forrása, munkakapcsoló, motor állapot,
-PWM (0,01 %) és áram (0,1 A), pozícióhiba, napi és összes terület és gumószám.
+fordulatszám, PWM (0,01 %) és áram (0,1 A) egymás mellett (ha azonos fordulathoz egyre több PWM és
+áram kell, nehezedik a hajtás), pozícióhiba, napi és összes terület és gumószám.
 Softkey-ek: tőtáv +/−, számlálók nullázása, beállítások.
 
 ### Beállítások és szerviz

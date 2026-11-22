@@ -111,6 +111,9 @@ dolgozik = munkakapcsoló_lent && v > v_min && sebességforrás_érvényes && !r
 - **Elakadás / láncszakadás figyelés:**
   - nagy PWM, de nincs impulzus → elakadás
   - impulzus van, de a terhelés (áram) gyanúsan kicsi → lánc/hajtás szakadás (ha van áramméréses adat)
+- **Nehezedő hajtás:** ha azonos fordulatszámhoz egyre nagyobb PWM és áram kell → kopás, szennyeződés, beszorulás
+  előjele. A VT-n a fordulat, a PWM és az áram egymás mellett látszik; később figyelmeztetés is lehet belőle
+  (pl. tanult PWM/áram–fordulat görbéhez képest).
 
 ---
 
@@ -121,7 +124,7 @@ dolgozik = munkakapcsoló_lent && v > v_min && sebességforrás_érvényes && !r
 - Tényleges tőtáv (cm), számolt tő/ha
 - Sebesség + forrás (MSS / Ground / Wheel / nincs)
 - Munkakapcsoló állapot
-- Motor állapot, kimenő PWM (%, 0,01 felbontás), motoráram (A)
+- Motor állapot, fordulatszám (1/min), kimenő PWM (%, 0,01 felbontás), motoráram (A)
 - Számlálók: terület (ha), gumószám (napi / összes, nullázható)
 
 ### Beállítások / kalibráció
