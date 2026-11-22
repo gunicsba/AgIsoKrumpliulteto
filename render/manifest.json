@@ -1,0 +1,214 @@
+{
+  "manifest_version": 1,
+  "pool_id": "d254468b",
+  "pool_name": "",
+  "manufacturer": "",
+  "public": false,
+  "known_issues": [],
+  "pool_sha256": "d254468b04615518a0965c3473c67d326e34be37e28d29a15f521f3da113a14e",
+  "pool_size": 5820,
+  "vt_commit": "1.6.0-59-g25bbb5a",
+  "render_settings": {
+    "platform": "windows",
+    "renderer": "JUCE software renderer",
+    "juce_version": "JUCE v9.0.5",
+    "pixels_per_vt_pixel": 1,
+    "data_mask_size": 480,
+    "softkey_count": 12,
+    "softkey_width": 60,
+    "softkey_height": 60,
+    "softkey_rows": 6,
+    "softkey_columns": 2,
+    "softkey_padding": 10,
+    "working_set_button_size": 72,
+    "from_meta": [],
+    "fonts": [],
+    "font_fallback": true,
+    "pixel_hash": "sha256 of width and height as uint32 big endian, then the pixels as unpremultiplied RGBA8, row by row"
+  },
+  "load": {
+    "ok": true,
+    "error": null
+  },
+  "images": [
+    {
+      "file": "am_1100.png",
+      "object_id": 1100,
+      "object_type": "AlarmMask",
+      "width": 480,
+      "height": 480,
+      "sha256": "cb206183ecef9974c074b19b17c118c7b29cdb77a2a38de558d78df935cd0f21"
+    },
+    {
+      "file": "am_1101.png",
+      "object_id": 1101,
+      "object_type": "AlarmMask",
+      "width": 480,
+      "height": 480,
+      "sha256": "40128d69283c36393c92e3653e9b267bcd5925a51e8900862fefbe1ce99fe375"
+    },
+    {
+      "file": "am_1102.png",
+      "object_id": 1102,
+      "object_type": "AlarmMask",
+      "width": 480,
+      "height": 480,
+      "sha256": "8a714281dbb0f250464a9ad228f2112a8c278b404060a123100c7abdea4a7953"
+    },
+    {
+      "file": "am_1103.png",
+      "object_id": 1103,
+      "object_type": "AlarmMask",
+      "width": 480,
+      "height": 480,
+      "sha256": "c4728fe43a8f28c9b57944235b73a06365a6d602854d2070ca1e108c9fcfaeee"
+    },
+    {
+      "file": "dm_1000.png",
+      "object_id": 1000,
+      "object_type": "DataMask",
+      "width": 480,
+      "height": 480,
+      "sha256": "327b718a59e736d5d27d88dbe0f521435c89f96830d79e24f2608a66f7a39d77"
+    },
+    {
+      "file": "dm_1001.png",
+      "object_id": 1001,
+      "object_type": "DataMask",
+      "width": 480,
+      "height": 480,
+      "sha256": "d625b8d797df94508475a7bf1ad9b72a41d49cf01e41497b11f375487a943569"
+    },
+    {
+      "file": "dm_1002.png",
+      "object_id": 1002,
+      "object_type": "DataMask",
+      "width": 480,
+      "height": 480,
+      "sha256": "667ccc993e1f98d7746ab5f2faef681cf36a7267ec816116eb1dbf85401b2423"
+    },
+    {
+      "file": "screen_1000.png",
+      "object_id": 1000,
+      "object_type": "DataMask",
+      "width": 630,
+      "height": 480,
+      "sha256": "9275d3b5cde7e65b31b56e4b1251a4cf3ade97d2fedaf31d6ffccda5303d7542",
+      "soft_key_mask_id": 2000
+    },
+    {
+      "file": "screen_1001.png",
+      "object_id": 1001,
+      "object_type": "DataMask",
+      "width": 630,
+      "height": 480,
+      "sha256": "e5bd6d3420a6126c1fa275d1cb9cfc4a4d9c645a86bace7b661b1efcb2973a6c",
+      "soft_key_mask_id": 2001
+    },
+    {
+      "file": "screen_1002.png",
+      "object_id": 1002,
+      "object_type": "DataMask",
+      "width": 630,
+      "height": 480,
+      "sha256": "8c7bbca1d09f9ce1dcc89bf3a1f278392abf89463f89e806de086293a753b50a",
+      "soft_key_mask_id": 2002
+    },
+    {
+      "file": "screen_1100.png",
+      "object_id": 1100,
+      "object_type": "AlarmMask",
+      "width": 630,
+      "height": 480,
+      "sha256": "44d6f3e575c4f7960a2e00d30ccacdecc84310981908f160a2d9793d083a8881",
+      "soft_key_mask_id": 2100
+    },
+    {
+      "file": "screen_1101.png",
+      "object_id": 1101,
+      "object_type": "AlarmMask",
+      "width": 630,
+      "height": 480,
+      "sha256": "4c3c42f032cb1ff383d6d35e2c1dd15a20bf2b1bbf28e03946ba1f553cb2a2c8",
+      "soft_key_mask_id": 2100
+    },
+    {
+      "file": "screen_1102.png",
+      "object_id": 1102,
+      "object_type": "AlarmMask",
+      "width": 630,
+      "height": 480,
+      "sha256": "bea46bc1d095d75c0a1261616e0d69f8b14f1b59707ce3335711fb2f7c601d26",
+      "soft_key_mask_id": 2100
+    },
+    {
+      "file": "screen_1103.png",
+      "object_id": 1103,
+      "object_type": "AlarmMask",
+      "width": 630,
+      "height": 480,
+      "sha256": "817f73ed52909e14385b46d61d233aef19f88831f64f3c1f37fc17bd6baff669",
+      "soft_key_mask_id": 2100
+    },
+    {
+      "file": "skm_2000.png",
+      "object_id": 2000,
+      "object_type": "SoftKeyMask",
+      "width": 150,
+      "height": 480,
+      "sha256": "9787bde477e072f0c6864ee6a03587f185ed54745cbf747e6927eff51df478ea",
+      "page": 1,
+      "page_count": 1
+    },
+    {
+      "file": "skm_2001.png",
+      "object_id": 2001,
+      "object_type": "SoftKeyMask",
+      "width": 150,
+      "height": 480,
+      "sha256": "d2430becfea0998031e28ce0fa42d13bda17c2a38d955e34496011ee4b1eff83",
+      "page": 1,
+      "page_count": 1
+    },
+    {
+      "file": "skm_2002.png",
+      "object_id": 2002,
+      "object_type": "SoftKeyMask",
+      "width": 150,
+      "height": 480,
+      "sha256": "7c32573cafdcad454a93a49bea497e3c4465319f84be94df77a82956cda5f0b8",
+      "page": 1,
+      "page_count": 1
+    },
+    {
+      "file": "skm_2100.png",
+      "object_id": 2100,
+      "object_type": "SoftKeyMask",
+      "width": 150,
+      "height": 480,
+      "sha256": "10d52e2917339a09e2735dde691254de4012f8c4cde3353a3d65e205dfed9a17",
+      "page": 1,
+      "page_count": 1
+    },
+    {
+      "file": "ws_designator.png",
+      "object_id": 0,
+      "object_type": "WorkingSet",
+      "width": 96,
+      "height": 96,
+      "sha256": "261a4a1c105d7c5e0ae92478bcf46e055692d34f6b375b3ccd5fcfbe014503ba",
+      "active": false
+    },
+    {
+      "file": "ws_designator_active.png",
+      "object_id": 0,
+      "object_type": "WorkingSet",
+      "width": 96,
+      "height": 96,
+      "sha256": "d45ee66da9d10ef6b711fe16b43840f5d293952b43309843e0cbf0ab082bd651",
+      "active": true
+    }
+  ],
+  "unsupported_objects": [],
+  "errors": []
+}
