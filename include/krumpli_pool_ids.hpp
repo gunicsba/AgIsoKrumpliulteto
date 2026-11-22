@@ -21,7 +21,6 @@ namespace krumpli_pool
 	// Soft keys (object ids)
 	constexpr std::uint16_t KEY_SPACING_UP = 5000;
 	constexpr std::uint16_t KEY_SPACING_DOWN = 5001;
-	constexpr std::uint16_t KEY_PRIME = 5002;
 	constexpr std::uint16_t KEY_RESET_COUNTERS = 5003;
 	constexpr std::uint16_t KEY_SETTINGS = 5004;
 	constexpr std::uint16_t KEY_SERVICE = 5005;
@@ -31,7 +30,6 @@ namespace krumpli_pool
 	// Soft key codes (Soft Key Activation message)
 	constexpr std::uint8_t KEY_SPACING_UP_CODE = 1;
 	constexpr std::uint8_t KEY_SPACING_DOWN_CODE = 2;
-	constexpr std::uint8_t KEY_PRIME_CODE = 3;
 	constexpr std::uint8_t KEY_RESET_COUNTERS_CODE = 4;
 	constexpr std::uint8_t KEY_SETTINGS_CODE = 5;
 	constexpr std::uint8_t KEY_SERVICE_CODE = 6;

@@ -212,7 +212,6 @@ SKM_MAIN, SKM_SETTINGS, SKM_SERVICE, SKM_ALARM = 2000, 2001, 2002, 2100
 KEYS = {
     "KEY_SPACING_UP": (5000, 1),
     "KEY_SPACING_DOWN": (5001, 2),
-    "KEY_PRIME": (5002, 3),
     "KEY_RESET_COUNTERS": (5003, 4),
     "KEY_SETTINGS": (5004, 5),
     "KEY_SERVICE": (5005, 6),
@@ -315,9 +314,6 @@ def build():
     # --- Soft keys --------------------------------------------------------------------------
     key_label(p, "KEY_SPACING_UP", "+", "TŐTÁV")
     key_label(p, "KEY_SPACING_DOWN", "-", "TŐTÁV")
-    p.key(KEYS["KEY_PRIME"][0], KEYS["KEY_PRIME"][1],
-          offset(potato_icon(p, 36, 26), 12, 8) + [(p.text(60, 18, "FELTÖLT", BLACK, F8x12, CENTER | MIDDLE), 0, 40)],
-          name="KEY_PRIME")
     key_label(p, "KEY_RESET_COUNTERS", "0", "NULLÁZ")
     key_label(p, "KEY_SETTINGS", "...", "BEÁLLÍT", F16x24)
     key_label(p, "KEY_SERVICE", "S", "SZERVIZ")
@@ -326,8 +322,8 @@ def build():
     key_label(p, "KEY_ALARM_ACK", "OK", "NYUGTA", F24x32, DARK_GREEN)
 
     k = {name: object_id for name, (object_id, _) in KEYS.items()}
-    p.soft_key_mask(SKM_MAIN, [k["KEY_SPACING_UP"], k["KEY_SPACING_DOWN"], k["KEY_PRIME"],
-                               k["KEY_RESET_COUNTERS"], NONE, k["KEY_SETTINGS"]], name="SKM_MAIN")
+    p.soft_key_mask(SKM_MAIN, [k["KEY_SPACING_UP"], k["KEY_SPACING_DOWN"], k["KEY_RESET_COUNTERS"],
+                               NONE, NONE, k["KEY_SETTINGS"]], name="SKM_MAIN")
     p.soft_key_mask(SKM_SETTINGS, [k["KEY_HOME"], NONE, NONE, NONE, NONE, k["KEY_SERVICE"]], name="SKM_SETTINGS")
     p.soft_key_mask(SKM_SERVICE, [k["KEY_HOME"], NONE, k["KEY_CALIBRATE"]], name="SKM_SERVICE")
     p.soft_key_mask(SKM_ALARM, [k["KEY_ALARM_ACK"]], name="SKM_ALARM")

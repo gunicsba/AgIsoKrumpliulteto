@@ -99,7 +99,6 @@ dolgozik = munkakapcsoló_lent && v > v_min && sebességforrás_érvényes && !r
 
 - **Emeléskor** a pozícióhibát **befagyasztjuk**, nem nullázzuk → visszaengedéskor pontosan onnan folytatja, nincs dupla vagy kihagyott gumó a forduló után.
 - Opcionális paraméter: **indulási előretolás** (néhány cm vagy csésze), ha a szélen kell korrekció.
-- **Feltöltés / tesztforgatás** gomb a VT-n: kézzel forgatja a csészesort álló gépnél (csak munkakapcsoló fent + álló gép mellett engedélyezve).
 
 ---
 
@@ -139,11 +138,10 @@ dolgozik = munkakapcsoló_lent && v > v_min && sebességforrás_érvényes && !r
 - Motor túláram / meghajtó hiba
 
 ### Softkey-ek
-- Feltöltés / tesztforgatás
 - Számláló nullázás
 - Tőtáv +/- lépés
 
-AUX-N funkciók (opcionális): tőtáv +/-, feltöltés.
+AUX-N funkciók (opcionális): tőtáv +/-.
 
 ---
 
@@ -151,7 +149,7 @@ AUX-N funkciók (opcionális): tőtáv +/-, feltöltés.
 
 - Bármely tiltó riasztás → motor áll.
 - Busz-kiesés (nincs sebesség) → motor áll, riasztás.
-- Tesztforgatás csak álló gépnél és felemelt munkakapcsolónál.
+- Forgatásos kalibráció csak álló gépnél és felemelt munkakapcsolónál.
 - Motor indulási áramkorlát, lágyindítás.
 
 ---

@@ -30,7 +30,7 @@ kódolással (font type 2), így az ő és ű is helyesen jelenik meg. A kijelze
 
 Cél tőtáv (bevihető), tényleges tőtáv, tő/ha, sebesség és forrása, munkakapcsoló, motor állapot és
 terhelés, pozícióhiba, napi és összes terület és gumószám.
-Softkey-ek: tőtáv +/−, feltöltés / tesztforgatás, számlálók nullázása, beállítások.
+Softkey-ek: tőtáv +/−, számlálók nullázása, beállítások.
 
 ### Beállítások és szerviz
 
@@ -87,3 +87,7 @@ Az [AgIsoStack++](https://github.com/Open-Agriculture/AgIsoStack-plus-plus) VT k
 - [ ] Firmware: VT kliens, sebesség/távolság olvasás, távolságkövető motorszabályzás
 - [ ] Hardver: motor, meghajtó, jeladó kiválasztása (lásd a jegyzet 9. pontját)
 - [ ] Később: TC-BAS, TC-SC, TC-GEO
+
+## Licenc
+
+[WTFPL](LICENSE)
