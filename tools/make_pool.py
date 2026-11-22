@@ -125,10 +125,14 @@ class Pool:
                         u8(11) + u16(w) + u16(h) + u8(bg) + u16(font) + u8((1 if transparent else 0) | (2 if wrap else 0)) + u16(NONE) +
                         u8(just) + u16(len(data)) + data + u8(0), refs=[font], name=name)
 
-    def number(self, object_id, w, h, value, scale, decimals, colour=BLACK, size=F16x24, just=RIGHT | MIDDLE, offset=0, name=None):
+    def number(self, object_id, w, h, value, scale, decimals, colour=BLACK, size=F16x24, just=RIGHT | MIDDLE, offset=0, name=None,
+               var=NONE):
         font = self.font(colour, size)
-        return self.add(object_id, u8(12) + u16(w) + u16(h) + u8(WHITE) + u16(font) + u8(1) + u16(NONE) + u32(value) +
-                        i32(offset) + f32(scale) + u8(decimals) + u8(0) + u8(just) + u8(0), refs=[font], name=name)
+        return self.add(object_id, u8(12) + u16(w) + u16(h) + u8(WHITE) + u16(font) + u8(1) + u16(var) + u32(value) +
+                        i32(offset) + f32(scale) + u8(decimals) + u8(0) + u8(just) + u8(0), refs=[font, var], name=name)
+
+    def number_variable(self, object_id, value, name=None):
+        return self.add(object_id, u8(21) + u32(value), name=name)
 
     def input_number(self, object_id, w, h, value, minimum, maximum, scale, decimals, size=F16x24, name=None):
         font = self.font(BLACK, size)
@@ -159,14 +163,15 @@ class Pool:
                 b"".join(u16(x) + u16(y) for x, y in points))
         return self.add(self.auto(), body, refs=[line, fill])
 
-    def bar(self, object_id, w, h, value, colour, ticks=0, target=None, name=None):
+    def bar(self, object_id, w, h, value, colour, ticks=0, target=None, name=None, maximum=100, var=NONE):
         options = 0x01 | 0x10 | 0x20  # border, horizontal, grows to the right
         if target is not None:
             options |= 0x02
         if ticks:
             options |= 0x04
         return self.add(object_id, u8(18) + u16(w) + u16(h) + u8(colour) + u8(BLACK) + u8(options) + u8(ticks) +
-                        u16(0) + u16(100) + u16(NONE) + u16(value) + u16(NONE) + u16(target or 0) + u8(0), name=name)
+                        u16(0) + u16(maximum) + u16(var) + u16(value) + u16(NONE) + u16(target or 0) + u8(0),
+                        refs=[var], name=name)
 
     def container(self, w, h, items):
         return self.add(self.auto(), u8(3) + u16(w) + u16(h) + u8(0) + u8(len(items)) + u8(0) + children(items),
@@ -230,8 +235,8 @@ OUT_WORK_SWITCH_TEXT = 6005       # string, 5 chars: "LENT" / "FENT"
 OBJ_WORK_SWITCH_LED = 6006        # ellipse, change its fill attribute
 OUT_STATUS_TEXT = 6007            # string, 9 chars: "DOLGOZIK" / "ÁLL" / "RIASZTÁS"
 OBJ_STATUS_BOX = 6008             # rectangle, change its fill attribute
-OUT_MOTOR_LOAD_BAR = 6009         # 0..100 %
-OUT_MOTOR_LOAD = 6010             # %
+OUT_MOTOR_PWM_BAR = 6009          # shows VAR_MOTOR_PWM
+OUT_MOTOR_PWM = 6010              # shows VAR_MOTOR_PWM
 OUT_POSITION_ERROR_BAR = 6011     # 0..100, 50 = no error
 OUT_POSITION_ERROR = 6012         # 0.01 cup, offset so that 0 cup = 10000
 OUT_AREA_DAY = 6013               # 0.01 ha
@@ -239,6 +244,8 @@ OUT_AREA_TOTAL = 6014             # 0.1 ha
 OUT_SEEDS_DAY = 6015              # pieces
 OUT_SEEDS_TOTAL = 6016            # pieces
 OUT_MOTOR_STATE = 6017            # string, 8 chars
+OUT_MOTOR_CURRENT = 6018          # 0.1 A
+VAR_MOTOR_PWM = 6019              # number variable, 0.01 % (0..10000): PWM bar and number together
 
 # Settings
 IN_ROW_SPACING = 6100             # cm
@@ -306,6 +313,8 @@ def setting_row(pool, label, unit, input_id, value, minimum, maximum, scale, dec
 def build():
     p = Pool()
 
+    p.number_variable(VAR_MOTOR_PWM, 4235, name="VAR_MOTOR_PWM")
+
     # Attributes the ECU switches between with Change Attribute
     p.names[FILL_GREEN] = p.fill(rgb(0, 4, 0))
     p.names[FILL_RED] = p.fill(RED)
@@ -361,14 +370,20 @@ def build():
 
     motor = panel(p, 464, 76, "Motor") + [
         (p.text(90, 20, "OK", DARK_GREEN, F12x16, LEFT | MIDDLE, object_id=OUT_MOTOR_STATE, name="OUT_MOTOR_STATE"), 60, 2),
-        (p.text(80, 20, "terhelés", LABEL, F8x12), 8, 26),
-        (p.bar(OUT_MOTOR_LOAD_BAR, 170, 18, 42, rgb(0, 3, 5), ticks=5, name="OUT_MOTOR_LOAD_BAR"), 8, 46),
-        (p.number(OUT_MOTOR_LOAD, 40, 18, 42, 1, 0, BLACK, F8x12, name="OUT_MOTOR_LOAD"), 180, 46),
-        (p.text(16, 18, "%", LABEL, F8x12), 222, 46),
-        (p.text(140, 20, "pozícióhiba", LABEL, F8x12), 248, 26),
-        (p.bar(OUT_POSITION_ERROR_BAR, 120, 18, 54, rgb(5, 3, 0), target=50, name="OUT_POSITION_ERROR_BAR"), 248, 46),
-        (p.number(OUT_POSITION_ERROR, 50, 18, 10008, 0.01, 2, BLACK, F8x12, offset=-10000, name="OUT_POSITION_ERROR"), 368, 46),
-        (p.text(40, 18, "cs.", LABEL, F8x12), 422, 46),
+        (p.text(80, 20, "PWM", LABEL, F8x12), 8, 26),
+        (p.bar(OUT_MOTOR_PWM_BAR, 110, 18, 0, rgb(0, 3, 5), ticks=5, maximum=10000, var=VAR_MOTOR_PWM,
+               name="OUT_MOTOR_PWM_BAR"), 8, 46),
+        (p.number(OUT_MOTOR_PWM, 56, 18, 0, 0.01, 2, BLACK, F8x12, var=VAR_MOTOR_PWM, name="OUT_MOTOR_PWM"), 120, 46),
+        (p.text(16, 18, "%", LABEL, F8x12), 178, 46),
+        (p.rect(1, 50, GREY), 198, 22),
+        (p.text(60, 20, "áram", LABEL, F8x12), 208, 26),
+        (p.number(OUT_MOTOR_CURRENT, 52, 24, 124, 0.1, 1, BLACK, F12x16, name="OUT_MOTOR_CURRENT"), 204, 42),
+        (p.text(16, 24, "A", LABEL, F12x16, LEFT | BOTTOM), 258, 42),
+        (p.rect(1, 50, GREY), 280, 22),
+        (p.text(140, 20, "pozícióhiba", LABEL, F8x12), 290, 26),
+        (p.bar(OUT_POSITION_ERROR_BAR, 90, 18, 54, rgb(5, 3, 0), target=50, name="OUT_POSITION_ERROR_BAR"), 290, 46),
+        (p.number(OUT_POSITION_ERROR, 44, 18, 10008, 0.01, 2, BLACK, F8x12, offset=-10000, name="OUT_POSITION_ERROR"), 382, 46),
+        (p.text(30, 18, "cs.", LABEL, F8x12), 430, 46),
     ]
 
     def counter(label, unit, number_id, name, value, scale, decimals, y):
@@ -481,7 +496,7 @@ def write_header(p, path):
             lines.append(f"\tconstexpr std::uint16_t {n} = {p.names[n]};")
         return lines
 
-    var_names = [n for n in p.names if n.startswith(("IN_", "OUT_", "OBJ_"))]
+    var_names = [n for n in p.names if n.startswith(("IN_", "OUT_", "OBJ_", "VAR_"))]
     var_names.sort(key=lambda n: p.names[n])
     out = [
         "// Generated by tools/make_pool.py, do not edit.",

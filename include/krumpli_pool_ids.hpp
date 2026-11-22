@@ -50,8 +50,8 @@ namespace krumpli_pool
 	constexpr std::uint16_t OBJ_WORK_SWITCH_LED = 6006;
 	constexpr std::uint16_t OUT_STATUS_TEXT = 6007;
 	constexpr std::uint16_t OBJ_STATUS_BOX = 6008;
-	constexpr std::uint16_t OUT_MOTOR_LOAD_BAR = 6009;
-	constexpr std::uint16_t OUT_MOTOR_LOAD = 6010;
+	constexpr std::uint16_t OUT_MOTOR_PWM_BAR = 6009;
+	constexpr std::uint16_t OUT_MOTOR_PWM = 6010;
 	constexpr std::uint16_t OUT_POSITION_ERROR_BAR = 6011;
 	constexpr std::uint16_t OUT_POSITION_ERROR = 6012;
 	constexpr std::uint16_t OUT_AREA_DAY = 6013;
@@ -59,5 +59,7 @@ namespace krumpli_pool
 	constexpr std::uint16_t OUT_SEEDS_DAY = 6015;
 	constexpr std::uint16_t OUT_SEEDS_TOTAL = 6016;
 	constexpr std::uint16_t OUT_MOTOR_STATE = 6017;
+	constexpr std::uint16_t OUT_MOTOR_CURRENT = 6018;
+	constexpr std::uint16_t VAR_MOTOR_PWM = 6019;
 	constexpr std::uint16_t OUT_CAL_PULSES = 6207;
 } // namespace krumpli_pool

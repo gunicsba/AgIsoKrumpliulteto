@@ -121,7 +121,7 @@ dolgozik = munkakapcsoló_lent && v > v_min && sebességforrás_érvényes && !r
 - Tényleges tőtáv (cm), számolt tő/ha
 - Sebesség + forrás (MSS / Ground / Wheel / nincs)
 - Munkakapcsoló állapot
-- Motor állapot / terhelés (%)
+- Motor állapot, kimenő PWM (%, 0,01 felbontás), motoráram (A)
 - Számlálók: terület (ha), gumószám (napi / összes, nullázható)
 
 ### Beállítások / kalibráció

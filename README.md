@@ -28,8 +28,8 @@ kódolással (font type 2), így az ő és ű is helyesen jelenik meg. A kijelze
 
 ![Munkaképernyő](render/screen_1000.png)
 
-Cél tőtáv (bevihető), tényleges tőtáv, tő/ha, sebesség és forrása, munkakapcsoló, motor állapot és
-terhelés, pozícióhiba, napi és összes terület és gumószám.
+Cél tőtáv (bevihető), tényleges tőtáv, tő/ha, sebesség és forrása, munkakapcsoló, motor állapot,
+PWM (0,01 %) és áram (0,1 A), pozícióhiba, napi és összes terület és gumószám.
 Softkey-ek: tőtáv +/−, számlálók nullázása, beállítások.
 
 ### Beállítások és szerviz
@@ -73,7 +73,8 @@ vt-render --pool pool/krumpliulteto.iop --out render
 A firmware (még nincs meg) az `include/krumpli_pool_ids.hpp` azonosítóit használja, például:
 
 - tőtáv beállítás: `IN_TARGET_SPACING` (mm-ben tárolva, cm-ben kijelezve),
-- értékfrissítés *Change Numeric Value* paranccsal: `OUT_SPEED`, `OUT_SEEDS_PER_HA`, `OUT_MOTOR_LOAD_BAR`, …,
+- értékfrissítés *Change Numeric Value* paranccsal: `OUT_SPEED`, `OUT_SEEDS_PER_HA`, `OUT_MOTOR_CURRENT`, …,
+- motor PWM: a `VAR_MOTOR_PWM` number variable (0,01 %, 0–10000) frissítése egyszerre mozgatja a sávot és a számot,
 - állapotszöveg *Change String Value* paranccsal: `OUT_STATUS_TEXT`, `OUT_SPEED_SOURCE`, `OUT_WORK_SWITCH_TEXT`,
 - színváltás *Change Attribute* paranccsal: `OBJ_STATUS_BOX`, `OBJ_WORK_SWITCH_LED` → `FILL_GREEN` / `FILL_RED` / `FILL_GREY`,
 - riasztás: *Change Active Mask* `AM_JAM`, `AM_LAG`, `AM_NO_SPEED` vagy `AM_MOTOR` maszkra, nyugtázás `KEY_ALARM_ACK_CODE`.
